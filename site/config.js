@@ -27,8 +27,8 @@ window.CONFIG = {
     { title: "Instagram", href: "https://instagram.com/lifeoflucalisti" },
     { title: "TikTok",    href: "https://tiktok.com/@lifeoflucalisti" },
     { title: "YouTube",   href: "https://youtube.com/@lifeoflucalisti" },
-    { title: "Strava",    href: "https://strava.com/athletes/YOUR_ID" },
-    { title: "Coach Claude training-plan prompt", sub: "Free — DM me \"PLAN\"", href: "https://ig.me/m/lifeoflucalisti" },
+    { title: "Strava",    href: "https://www.strava.com/athletes/160897892" },
+    { title: "Coach Claude training-plan prompt V1", sub: "Free — DM me \"COACH\"", href: "https://docs.google.com/document/d/1S1IjwXbVosZH6rVW1UKh2BS1z2Ut5tj0mwdY0LZweVo/edit?tab=t.0" },
   ],
 
 
@@ -39,10 +39,10 @@ window.CONFIG = {
   // Races disappear on their own once they're over.
   raceHour: 7,
   races: [
-    { date: "2026-11-26", name: "Turkey Trot 5K" },
-    { date: "2027-02-15", name: "HYROX Doubles",         approx: true },
-    { date: "2027-04-25", name: "Illinois Marathon",     approx: true },
-    { date: "2027-06-13", name: "Ironman 70.3 Rockford", approx: true },
+    { date: "2026-11-25", name: "Turkey Trot 5K Eating Challenge" },
+    { date: "2027-02-13", name: "Chicago HYROX Doubles",         approx: true },
+    { date: "2027-04-24", name: "Illinois Marathon",     approx: true },
+    { date: "2027-06-13", name: "Ironman Rockford 70.3", approx: true },
     { date: "2027-09-12", name: "Ironman Wisconsin",     approx: true },
   ],
 
