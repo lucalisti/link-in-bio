@@ -36,7 +36,7 @@ window.CONFIG = {
   // "sub" is an optional small line under the title.
   links: [
     { title: "Follow me on Strava", icon: "strava", href: "https://www.strava.com/athletes/160897892" },
-    { title: "Coach Claude: IRONMAN Training Plan Prompt", sub: "Free for followers — DM me \"COACH\"", image: "coach-claude.png", href: "https://ig.me/m/lifeoflucalisti" }, // doc: "https://docs.google.com/document/d/1S1IjwXbVosZH6rVW1UKh2BS1z2Ut5tj0mwdY0LZweVo/edit?tab=t.0"
+    { title: "Coach Claude: IRONMAN Training Plan Prompt", sub: "Free for followers — DM me \"COACH\"", image: "coach-claude.png", href: "https://ig.me/m/lifeoflucalisti" },
   ],
 
 

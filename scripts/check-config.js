@@ -12,6 +12,11 @@ try {
 const c = ctx.window.CONFIG;
 if (!c) { console.error("✗ config.js must set window.CONFIG = { ... }"); process.exit(1); }
 
+// Everything in site/ is public (including comments in config.js). Block private links from leaking.
+const raw = fs.readFileSync(file, "utf8");
+if (/docs\.google\.com|drive\.google\.com/.test(raw))
+  errors.push("config.js contains a Google Docs/Drive link — everything in site/ is public, so the doc would be readable by anyone. Remove it (keep it in your notes instead).");
+
 const siteDir = path.join(__dirname, "..", "site");
 const ICONS = ["mail", "instagram", "youtube", "tiktok", "strava"];
 const fileExists = f => fs.existsSync(path.join(siteDir, f));
