@@ -12,12 +12,26 @@ try {
 const c = ctx.window.CONFIG;
 if (!c) { console.error("✗ config.js must set window.CONFIG = { ... }"); process.exit(1); }
 
-for (const k of ["name", "handle", "bio"]) if (typeof c[k] !== "string" || !c[k].trim()) errors.push(`"${k}" is missing or empty`);
+const siteDir = path.join(__dirname, "..", "site");
+const ICONS = ["mail", "instagram", "youtube", "tiktok", "strava"];
+const fileExists = f => fs.existsSync(path.join(siteDir, f));
+
+for (const k of ["name", "bio"]) if (typeof c[k] !== "string" || !c[k].trim()) errors.push(`"${k}" is missing or empty`);
+if (c.photo && !fileExists(c.photo)) errors.push(`photo "${c.photo}" not found in site/`);
+
+(c.socials || []).forEach((s, i) => {
+  if (!ICONS.includes(s.icon)) errors.push(`social #${i + 1} icon must be one of: ${ICONS.join(", ")}`);
+  if (!/^(https:\/\/|mailto:)/.test(s.href || "")) errors.push(`social "${s.icon}" href must start with https:// or mailto:`);
+  if (String(s.href).includes("YOUR_")) warnings.push(`social "${s.icon}" is still a placeholder (hidden on the site)`);
+});
+
 if (!Array.isArray(c.links) || !c.links.length) errors.push(`"links" needs at least one link`);
 (c.links || []).forEach((l, i) => {
   if (!l.title) errors.push(`link #${i + 1} has no title`);
   if (!/^https:\/\//.test(l.href || "")) errors.push(`link "${l.title || i + 1}" href must start with https://`);
   if (String(l.href).includes("YOUR_")) warnings.push(`link "${l.title}" is still a placeholder (hidden on the site)`);
+  if (l.icon && !ICONS.includes(l.icon)) errors.push(`link "${l.title}" icon must be one of: ${ICONS.join(", ")}`);
+  if (l.image && !fileExists(l.image)) errors.push(`link "${l.title}" image "${l.image}" not found in site/`);
 });
 let prev = 0;
 (c.races || []).forEach(r => {
@@ -27,8 +41,7 @@ let prev = 0;
   prev = t;
   if (r.approx) warnings.push(`race "${r.name}" date is approximate`);
 });
-if (String(c.email).includes("YOUR_")) warnings.push(`email is still a placeholder (hidden on the site)`);
 
 warnings.forEach(w => console.log("⚠ " + w));
 if (errors.length) { errors.forEach(e => console.error("✗ " + e)); process.exit(1); }
-console.log(`✓ config.js OK — ${c.links.length} links, ${(c.races || []).length} races`);
+console.log(`✓ config.js OK — ${(c.socials || []).length} icons, ${c.links.length} links, ${(c.races || []).length} races`);
