@@ -34,16 +34,16 @@ window.CONFIG = {
 
   // ---------- Races ----------
   // date: "YYYY-MM-DD".  Put them in order, soonest first.
-  // approx: true  → date not confirmed yet (shows "~Feb 2027"). Remove it once you know the date.
+  // approx: true  → add to a race if the date isn't confirmed yet (shows "~Feb 2027").
   // hour: 8       → optional start hour (24h). Otherwise uses raceHour below.
   // Races disappear on their own once they're over.
   raceHour: 7,
   races: [
-    { date: "2026-11-25", name: "Turkey Trot 5K Eating Challenge" },
-    { date: "2027-02-13", name: "Chicago HYROX Doubles",         approx: true },
-    { date: "2027-04-24", name: "Illinois Marathon",     approx: true },
-    { date: "2027-06-13", name: "Ironman Rockford 70.3", approx: true },
-    { date: "2027-09-12", name: "Ironman Wisconsin",     approx: true },
+    { date: "2026-11-25", name: "Turkey Trot 5K Eating Challenge"},
+    { date: "2027-02-13", name: "Chicago HYROX Doubles"},
+    { date: "2027-04-24", name: "Illinois Marathon"},
+    { date: "2027-06-13", name: "Ironman Rockford 70.3"},
+    { date: "2027-09-12", name: "Ironman Wisconsin"},
   ],
 
 };
