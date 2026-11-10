@@ -9,10 +9,6 @@ on:
 # Least privilege: nothing by default; each job asks only for what it needs.
 permissions: {}
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -33,6 +29,10 @@ jobs:
     needs: check
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # Only deploys queue behind each other; PR checks never cancel a pending deploy.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     permissions:
       contents: read
       pages: write
