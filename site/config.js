@@ -16,9 +16,9 @@ window.CONFIG = {
   // ---------- About you ----------
   name:   "Luca Listi",
   handle: "@lifeoflucalisti",
-  bio:    "Data & AI engineer in Chicago. Training for my first full Ironman.",
+  bio:    "Senior Data & AI engineer | Ironman & Hybrid Athlete| Chicago,IL",
   photo:  "",                          // optional: put photo.jpg in this folder and write "photo.jpg"
-  email:  "collabs@YOUR_DOMAIN.com",   // collab email; set to "" to hide it
+  email:  "lifeoflucalisti@gmail.com",   // collab email; set to "" to hide it
 
 
   // ---------- Links (shown top to bottom) ----------
