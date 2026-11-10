@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Luca Listi</title>
+<meta name="description" content="Data & AI engineer in Chicago. Training for my first full Ironman.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Luca Listi (@lifeoflucalisti)">
+<meta property="og:description" content="Data & AI engineer in Chicago. Training for my first full Ironman.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#fafaf9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231c1c1e'/%3E%3Crect y='15.5' width='32' height='1' fill='%23fafaf9'/%3E%3Ctext x='16' y='23' font-family='Menlo,monospace' font-size='20' font-weight='700' fill='%23f4f4f1' text-anchor='middle'%3EL%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single quiet column — name, bio, links, next race (big flip clock), later races (small clocks). */
+:root{
+  --bg:#fafaf9; --fg:#18181a; --muted:#6f6f73; --line:#e6e6e3; --hover:#f0f0ee;
+  --tile:#1c1c1e; --tile-top:#252527; --tile-fg:#f4f4f1;
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111112;--fg:#ededec;--muted:#8e8e93;--line:#262628;--hover:#1b1b1d;
+  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#111112;--fg:#ededec;--muted:#8e8e93;--line:#262628;--hover:#1b1b1d;
+  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--sans);margin:0;-webkit-font-smoothing:antialiased}
+.wrap{max-width:26rem;margin:0 auto;padding-block:64px 56px;
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:40px}
+
+header{display:flex;flex-direction:column;gap:6px}
+.avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;margin-bottom:10px}
+h1{font-size:1.5rem;font-weight:600;letter-spacing:-.02em;margin:0;line-height:1.2}
+.handle{font:400 .85rem var(--mono);color:var(--muted)}
+.bio{margin:6px 0 0;color:var(--muted);text-wrap:pretty}
+
+h2{font:400 .75rem var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px}
+ul{list-style:none;margin:0;padding:0}
+
+.links li + li{border-top:1px solid var(--line)}
+.links a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;
+  color:inherit;text-decoration:none;border-radius:6px;transition:background .15s}
+.links a:hover{background:var(--hover)}
+.links a:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.links .t{min-width:0;font-weight:500}
+.links .s{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+.arrow{color:var(--muted);flex:none;transition:transform .15s}
+.links a:hover .arrow{transform:translate(2px,-2px);color:var(--fg)}
+
+/* Next race */
+.next-race{display:flex;flex-direction:column;gap:14px}
+.next-race .n{font-size:1.1rem;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.next-race .d{display:block;font:400 .78rem var(--mono);color:var(--muted);margin-top:2px}
+.next-race .clock{--w:34px;--h:48px;--fs:30px;gap:14px}
+.next-race .unit{font-size:.75rem}
+
+/* Later races */
+.races li{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 4px}
+.races li + li{border-top:1px solid var(--line)}
+.races .n{min-width:0}
+.races .d{display:block;font:400 .78rem var(--mono);color:var(--muted)}
+.races .done .n{color:var(--muted)}
+.status{font:400 .8rem var(--mono);color:var(--muted)}
+
+/* Flip clock */
+.clock{--w:20px;--h:28px;--fs:17px;display:flex;align-items:flex-end;gap:10px}
+.grp{display:flex;align-items:flex-end;gap:2px}
+.unit{font:400 .7rem var(--mono);color:var(--muted);margin-left:3px;line-height:1}
+.flap{position:relative;width:var(--w);height:var(--h);font:600 var(--fs) var(--mono);perspective:calc(var(--h) * 5);font-variant-numeric:tabular-nums}
+.half{position:absolute;left:0;right:0;height:50%;overflow:hidden;color:var(--tile-fg);backface-visibility:hidden}
+.half > span{display:block;height:var(--h);line-height:var(--h);text-align:center}
+.half.t{top:0;background:var(--tile-top);border-radius:4px 4px 0 0}
+.half.b{bottom:0;background:var(--tile);border-radius:0 0 4px 4px}
+.half.b > span{transform:translateY(-50%)}
+.flap::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-.5px;background:var(--bg);z-index:3}
+.flap::before{content:"";position:absolute;left:-1px;right:-1px;top:50%;height:4px;margin-top:-2px;z-index:4;opacity:.6;
+  background:linear-gradient(90deg,var(--muted) 0 2px,transparent 2px calc(100% - 2px),var(--muted) calc(100% - 2px))}
+.half.ft{z-index:2;transform-origin:bottom;animation:ft .22s ease-in both}
+.half.fb{z-index:2;transform-origin:top;animation:fb .22s ease-out both}
+@keyframes ft{from{transform:rotateX(0)}to{transform:rotateX(-90deg)}}
+@keyframes fb{from{transform:rotateX(90deg)}to{transform:rotateX(0)}}
+
+footer{font-size:.85rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+footer code{font:400 .85rem var(--mono);color:var(--fg);user-select:all}
+.copy{font:inherit;color:var(--muted);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.copy:hover{color:var(--fg)}
+.draft{font:400 .75rem var(--mono);color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:6px 10px;margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <p class="draft" id="draft" hidden>Only you see this: items still marked YOUR_ in config.js are hidden on the live site.</p>
+
+  <header>
+    <img class="avatar" id="avatar" alt="" hidden>
+    <h1 id="name"></h1>
+    <span class="handle" id="handle"></span>
+    <p class="bio" id="bio"></p>
+  </header>
+
+  <section>
+    <h2>Links</h2>
+    <ul class="links" id="links"></ul>
+  </section>
+
+  <section class="next-race" id="next" hidden>
+    <h2>Next race</h2>
+    <div><div class="n" id="next-name"></div><span class="d" id="next-date"></span></div>
+    <div class="clock" id="next-clock" role="img"></div>
+  </section>
+
+  <section id="later-wrap" hidden>
+    <h2>Later</h2>
+    <ul class="races" id="races"></ul>
+  </section>
+
+  <footer id="contact" hidden>
+    <span>Collabs</span><code id="email"></code><button class="copy" id="copy" type="button">Copy</button>
+  </footer>
+</main>
+
+<script src="config.js"></script>
+<script>
+/* All content lives in config.js — edit that file, not this one. */
+const CONFIG = window.CONFIG;
+if (!CONFIG) {
+  document.querySelector("main").innerHTML = '<p class="draft">config.js has a typo (or is missing). Check for a missing quote or comma near the line you last changed.</p>';
+  throw new Error("CONFIG missing");
+}
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---- Header, links, contact ---- */
+$("name").textContent = CONFIG.name;
+$("handle").textContent = CONFIG.handle;
+$("bio").textContent = CONFIG.bio;
+if (CONFIG.photo) { $("avatar").src = CONFIG.photo; $("avatar").hidden = false; }
+
+const ARROW = '<svg class="arrow" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M4 10L10 4M5 4h5v5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>';
+$("links").innerHTML = CONFIG.links.filter(l => !String(l.href).includes("YOUR_")).map(l =>
+  `<li><a href="${esc(l.href)}" target="_blank" rel="noopener"><span class="t">${esc(l.title)}${l.sub ? `<span class="s">${esc(l.sub)}</span>` : ""}</span>${ARROW}</a></li>`).join("");
+
+if (CONFIG.email && !CONFIG.email.includes("YOUR_")) {
+  $("email").textContent = CONFIG.email; $("contact").hidden = false;
+  $("copy").addEventListener("click", e => {
+    const b = e.currentTarget, ok = () => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1500); };
+    const sel = () => { const r = document.createRange(); r.selectNodeContents($("email")); getSelection().removeAllRanges(); getSelection().addRange(r); };
+    try { navigator.clipboard.writeText(CONFIG.email).then(ok, sel); } catch { sel(); }
+  });
+}
+// Placeholder links/email are hidden on the page; the banner only shows when you open the file on your Mac.
+$("draft").hidden = !(location.protocol === "file:" && JSON.stringify(CONFIG).includes("YOUR_"));
+
+/* ---- Flip tiles ---- */
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const face = (half, v) => { half.firstChild.textContent = v; };
+function mkFlap(v) {
+  const f = document.createElement("span"); f.className = "flap"; f.setAttribute("aria-hidden", "true");
+  f.innerHTML = '<span class="half t"><span></span></span><span class="half b"><span></span></span>';
+  setFlap(f, v); return f;
+}
+function setFlap(f, v, delay = 0) {
+  const old = f.dataset.v; if (old === v) return; f.dataset.v = v;
+  const t = f.children[0], b = f.children[1];
+  if (old === undefined || reduce) { face(t, v); face(b, v); return; }
+  face(t, v);
+  const ft = t.cloneNode(true); face(ft, old); ft.classList.add("ft"); ft.style.animationDelay = delay + "ms";
+  const fb = b.cloneNode(true); face(fb, v); fb.classList.add("fb"); fb.style.animationDelay = (delay + 220) + "ms";
+  f.append(ft, fb);
+  fb.addEventListener("animationend", () => { face(b, v); ft.remove(); fb.remove(); }, { once: true });
+}
+/* A clock = groups of tiles, e.g. [[3,"d"],[2,"h"],[2,"m"]] */
+function mkClock(el, spec) {
+  el.innerHTML = "";
+  const flaps = [];
+  spec.forEach(([n, unit]) => {
+    const g = document.createElement("span"); g.className = "grp";
+    for (let i = 0; i < n; i++) { const f = mkFlap("0"); flaps.push(f); g.append(f); }
+    g.insertAdjacentHTML("beforeend", `<span class="unit" aria-hidden="true">${unit}</span>`);
+    el.append(g);
+  });
+  return flaps;
+}
+
+/* ---- Races ---- */
+const races = CONFIG.races.map(r => {
+  const [y, m, d] = r.date.split("-").map(Number);
+  const t = new Date(y, m - 1, d, r.hour ?? CONFIG.raceHour);
+  const when = (r.approx ? "~" : "") + t.toLocaleDateString("en-US", r.approx ? {month:"short", year:"numeric"} : {weekday:"short", month:"short", day:"numeric", year:"numeric"});
+  return { ...r, t, when };
+});
+const parts = ms => { const mins = Math.floor(ms / 6e4); return { d: Math.floor(mins / 1440), h: Math.floor(mins / 60) % 24, m: mins % 60 }; };
+const pad = (n, w) => String(Math.min(n, 10 ** w - 1)).padStart(w, "0");
+
+let heroKey = null, heroFlaps = null, listKey = null, listRows = [];
+
+function render(stagger) {
+  const now = Date.now();
+  const upcoming = races.filter(r => r.t - now > -12 * 36e5);          // keep race day visible until noon-ish
+  const hero = upcoming[0], later = upcoming.slice(1);
+
+  /* Next race */
+  $("next").hidden = !hero;
+  if (hero) {
+    const ms = hero.t - now;
+    if (heroKey !== hero.name + (ms <= 0)) {
+      heroKey = hero.name + (ms <= 0);
+      $("next-name").textContent = hero.name;
+      $("next-date").textContent = hero.when;
+      heroFlaps = ms <= 0 ? null : mkClock($("next-clock"), [[3, "d"], [2, "h"], [2, "m"]]);
+      if (!heroFlaps) $("next-clock").innerHTML = '<span class="status">Race day</span>';
+    }
+    if (heroFlaps && stagger !== null) {
+      const p = parts(ms), s = pad(p.d, 3) + pad(p.h, 2) + pad(p.m, 2);
+      heroFlaps.forEach((f, i) => setFlap(f, s[i], stagger ? i * 60 : 0));
+      $("next-clock").setAttribute("aria-label", `${p.d} days, ${p.h} hours, ${p.m} minutes to go`);
+    }
+  }
+
+  /* Later races */
+  $("later-wrap").hidden = !later.length;
+  const key = later.map(r => r.name).join("|");
+  if (key !== listKey) {
+    listKey = key;
+    $("races").innerHTML = "";
+    listRows = later.map(r => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span class="n">${esc(r.name)}<span class="d">${esc(r.when)}</span></span><span class="clock" role="img"></span>`;
+      $("races").append(li);
+      const clock = li.querySelector(".clock");
+      return { r, clock, flaps: mkClock(clock, [[3, "d"], [2, "h"]]) };
+    });
+  }
+  if (stagger !== null) listRows.forEach((row, ri) => {
+    const p = parts(row.r.t - now), s = pad(p.d, 3) + pad(p.h, 2);
+    row.flaps.forEach((f, i) => setFlap(f, s[i], stagger ? 300 + ri * 90 + i * 45 : 0));
+    row.clock.setAttribute("aria-label", `${p.d} days, ${p.h} hours to go`);
+  });
+}
+
+render(null);                         // first frame: build tiles at zero
+setTimeout(() => render(true), 350);  // flip to the real countdown, cascading
+setInterval(() => render(false), 1000);
+</script>
+</body>
+</html>
