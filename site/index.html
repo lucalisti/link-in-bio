@@ -212,6 +212,7 @@ const races = (CONFIG.races || []).map(r => {
 });
 const parts = ms => { const mins = Math.floor(ms / 6e4); return { d: Math.floor(mins / 1440), h: Math.floor(mins / 60) % 24, m: mins % 60 }; };
 const pad = (n, w) => String(Math.min(n, 10 ** w - 1)).padStart(w, "0");
+const dayWidth = ms => Math.max(2, String(parts(ms).d).length);   // 2 tiles, or 3 when 100+ days out
 
 let heroKey = null, heroFlaps = null, listKey = null, listRows = [];
 
@@ -223,16 +224,17 @@ function render(stagger) {
   /* Next race */
   $("next").hidden = !hero;
   if (hero) {
-    const ms = hero.t - now;
-    if (heroKey !== hero.name + (ms <= 0)) {
-      heroKey = hero.name + (ms <= 0);
+    const ms = hero.t - now, dw = dayWidth(ms);
+    const hk = hero.name + "|" + (ms <= 0) + "|" + dw;
+    if (heroKey !== hk) {
+      heroKey = hk;
       $("next-name").textContent = hero.name;
       $("next-date").textContent = hero.when;
-      heroFlaps = ms <= 0 ? null : mkClock($("next-clock"), [[3, "d"], [2, "h"], [2, "m"]]);
+      heroFlaps = ms <= 0 ? null : mkClock($("next-clock"), [[dw, "d"], [2, "h"], [2, "m"]]);
       if (!heroFlaps) $("next-clock").innerHTML = '<span class="status">Race day</span>';
     }
     if (heroFlaps && stagger !== null) {
-      const p = parts(ms), s = pad(p.d, 3) + pad(p.h, 2) + pad(p.m, 2);
+      const p = parts(ms), s = pad(p.d, dw) + pad(p.h, 2) + pad(p.m, 2);
       heroFlaps.forEach((f, i) => setFlap(f, s[i], stagger ? i * 60 : 0));
       $("next-clock").setAttribute("aria-label", `${p.d} days, ${p.h} hours, ${p.m} minutes to go`);
     }
@@ -248,12 +250,14 @@ function render(stagger) {
       const li = document.createElement("li");
       li.innerHTML = `<span class="n">${esc(r.name)}<span class="d">${esc(r.when)}</span></span><span class="clock" role="img"></span>`;
       $("races").append(li);
-      const clock = li.querySelector(".clock");
-      return { r, clock, flaps: mkClock(clock, [[3, "d"], [2, "h"]]) };
+      const clock = li.querySelector(".clock"), dw = dayWidth(r.t - now);
+      return { r, clock, dw, flaps: mkClock(clock, [[dw, "d"], [2, "h"]]) };
     });
   }
   if (stagger !== null) listRows.forEach((row, ri) => {
-    const p = parts(row.r.t - now), s = pad(p.d, 3) + pad(p.h, 2);
+    const dw = dayWidth(row.r.t - now);
+    if (dw !== row.dw) { row.dw = dw; row.flaps = mkClock(row.clock, [[dw, "d"], [2, "h"]]); }  // e.g. 100 → 99 days
+    const p = parts(row.r.t - now), s = pad(p.d, dw) + pad(p.h, 2);
     row.flaps.forEach((f, i) => setFlap(f, s[i], stagger ? 300 + ri * 90 + i * 45 : 0));
     row.clock.setAttribute("aria-label", `${p.d} days, ${p.h} hours to go`);
   });
