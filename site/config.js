@@ -16,7 +16,7 @@ window.CONFIG = {
   // ---------- About you ----------
   name:   "Luca Listi",
   handle: "@lifeoflucalisti",
-  bio:    "Senior Data & AI engineer | Ironman & Hybrid Athlete| Chicago,IL",
+  bio:    "Senior Data & AI Engineer · Ironman & Hybrid Athlete · Chicago, IL",
   photo:  "",                          // optional: put photo.jpg in this folder and write "photo.jpg"
   email:  "lifeoflucalisti@gmail.com",   // collab email; set to "" to hide it
 
@@ -28,7 +28,7 @@ window.CONFIG = {
     { title: "TikTok",    href: "https://tiktok.com/@lifeoflucalisti" },
     { title: "YouTube",   href: "https://youtube.com/@lifeoflucalisti" },
     { title: "Strava",    href: "https://www.strava.com/athletes/160897892" },
-    { title: "Coach Claude: IRONMAN-Training-Plan Prompt V1", sub: "DM me \"COACH\" for FREE prompt "},// href: "https://docs.google.com/document/d/1S1IjwXbVosZH6rVW1UKh2BS1z2Ut5tj0mwdY0LZweVo/edit?tab=t.0" },
+    { title: "Coach Claude: IRONMAN Training Plan Prompt", sub: "Free for followers — DM me \"COACH\"", href: "https://ig.me/m/lifeoflucalisti" }, // doc: "https://docs.google.com/document/d/1S1IjwXbVosZH6rVW1UKh2BS1z2Ut5tj0mwdY0LZweVo/edit?tab=t.0" },
   ],
 
 
