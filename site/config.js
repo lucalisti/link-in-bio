@@ -28,7 +28,7 @@ window.CONFIG = {
     { title: "TikTok",    href: "https://tiktok.com/@lifeoflucalisti" },
     { title: "YouTube",   href: "https://youtube.com/@lifeoflucalisti" },
     { title: "Strava",    href: "https://www.strava.com/athletes/160897892" },
-    { title: "Coach Claude training-plan prompt V1", sub: "Free — DM me \"COACH\"", href: "https://docs.google.com/document/d/1S1IjwXbVosZH6rVW1UKh2BS1z2Ut5tj0mwdY0LZweVo/edit?tab=t.0" },
+    { title: "Coach Claude: IRONMAN-Training-Plan Prompt V1", sub: "DM me \"COACH\" for FREE prompt "},// href: "https://docs.google.com/document/d/1S1IjwXbVosZH6rVW1UKh2BS1z2Ut5tj0mwdY0LZweVo/edit?tab=t.0" },
   ],
 
 
