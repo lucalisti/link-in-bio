@@ -3,18 +3,18 @@
   --bg:#fafaf9; --fg:#18181a; --muted:#6f6f73; --line:#e6e6e3;
   --card:#ffffff; --card-hover:#f3f3f1; --card-line:#e6e6e3;
   --tile:#1c1c1e; --tile-top:#262628; --tile-fg:#f4f4f1; --hinge:#0b0b0c;
-  --strava:#fc4c02; --xmas:#c8102e;
+  --strava:#fc4c02; --xmas:#c8102e; --gift:#b8102b; --pine:#1d6b44; --gold:#d9a521;
   --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111112;--fg:#ededec;--muted:#8e8e93;--line:#262628;
   --card:#1b1b1d;--card-hover:#232326;--card-line:#262628;
-  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff5c5c;color-scheme:dark}}
+  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff6b6b;--gift:#a3182d;--pine:#5cc98a;--gold:#f2c94c;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111112;--fg:#ededec;--muted:#8e8e93;--line:#262628;
   --card:#1b1b1d;--card-hover:#232326;--card-line:#262628;
-  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff5c5c;color-scheme:dark}
+  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff6b6b;--gift:#a3182d;--pine:#5cc98a;--gold:#f2c94c;color-scheme:dark}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -86,7 +86,8 @@ h2{font:400 .75rem var(--mono);color:var(--muted);text-transform:uppercase;lette
 /* December challenge calendar: 24 doors. "?" doors match the flip tiles; opened doors are cards. */
 .advent{display:flex;flex-direction:column;gap:14px}
 .advent-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
-.advent-head h2{margin:0}
+.advent-head h2{margin:0;display:flex;align-items:center;gap:7px}
+.advent-head .snow{width:14px;height:14px;color:var(--pine);flex:none}
 .advent-head .d{font:400 .75rem var(--mono);color:var(--muted)}
 .doors{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0;margin:0;list-style:none}
 .door{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden}
@@ -97,9 +98,15 @@ h2{font:400 .75rem var(--mono);color:var(--muted);text-transform:uppercase;lette
 .door.shut::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-.5px;background:var(--hinge)}
 .door.shut .num{opacity:.55}
 .door .q{font:600 1.6rem var(--mono);line-height:1;opacity:.9}
-.door.today{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--xmas)}
-.door .tag{position:absolute;bottom:6px;left:0;right:0;text-align:center;font:600 .58rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--xmas);z-index:1}
-.door.today .q{color:#fff}
+/* today: a wrapped gift — red box, ribbon cross, bow */
+.door.shut.today{background:var(--gift);color:#fff}
+.door.shut.today::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:7px;margin-left:-3.5px;background:rgba(255,255,255,.22)}
+.door.shut.today::after{height:7px;margin-top:-3.5px;background:rgba(255,255,255,.22)}
+.door.today .num{opacity:.85}
+.door .bow{position:relative;z-index:1;width:34px;height:34px;color:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.door .tag{position:absolute;bottom:6px;left:0;right:0;text-align:center;font:600 .55rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#fff;z-index:1}
+/* last door (Christmas Eve): gold star */
+.door .star{width:26px;height:26px;color:var(--gold);position:relative;z-index:1}
 /* opened */
 .door.done{background:var(--card);border:1px solid var(--card-line);transform-origin:top;animation:door .45s cubic-bezier(.2,.8,.3,1) both;animation-delay:calc(var(--i,0) * 70ms + 200ms)}
 .door.done > a{display:block;position:absolute;inset:0;transition:background .15s}
@@ -107,7 +114,7 @@ h2{font:400 .75rem var(--mono);color:var(--muted);text-transform:uppercase;lette
 .door.done .num{color:var(--xmas)}
 .door .ttl{position:absolute;inset:22px 7px 7px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;
   font-size:.72rem;font-weight:500;line-height:1.25;text-wrap:balance}
-.door.done > a .ttl::after{content:" ↗";color:var(--muted)}
+.door.done > a .ttl::after{content:" ↗";color:var(--pine)}
 @keyframes door{from{transform:perspective(400px) rotateX(-90deg);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.door.done{animation:none}}
 .advent-all{align-self:center;font-size:.85rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px}

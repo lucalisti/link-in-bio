@@ -90,6 +90,11 @@ const simDay = q.has("day") ? parseInt(q.get("day"), 10) || 0 : null;
 let adventStart = null, adventDay = null;
 if (A && A.start) { const [y, m, d] = A.start.split("-").map(Number); adventStart = new Date(y, m - 1, d); }
 const adventTotal = (A && A.total) || 24;
+const XMAS = {
+  snow: '<svg class="snow" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5M9.3 4.3 12 6.6l2.7-2.3M9.3 19.7 12 17.4l2.7 2.3M4.6 10.3l3.3-1.2-.6-3.5M19.4 13.7l-3.3 1.2.6 3.5M4.6 13.7l3.3 1.2-.6 3.5M19.4 10.3l-3.3-1.2.6-3.5"/></svg>',
+  bow: '<svg class="bow" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12C9.6 8.2 4.4 6.3 3.4 8.6 2.5 10.8 6.8 12.6 12 12zm0 0c2.4-3.8 7.6-5.7 8.6-3.4.9 2.2-3.4 4-8.6 3.4zm-1 .4-3 5.6 2.4-.6.9 2.2 1.2-6.8zm2 0 3 5.6-2.4-.6-.9 2.2-1.2-6.8z"/><circle cx="12" cy="12" r="1.9" fill="currentColor"/></svg>',
+  star: '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.8l2.7 5.9 6.4.7-4.8 4.3 1.4 6.3L12 16.8 6.3 20l1.4-6.3-4.8-4.3 6.4-.7z"/></svg>',
+};
 
 function adventToday() {           // 1 on start day, 2 the next day, … (0 or less = not started)
   if (simDay !== null) return simDay;
@@ -105,7 +110,7 @@ function adventVisible(today) {    // show from start day through Dec 31 (a reca
 function renderAdvent(today) {
   const byDay = {}; (A.days || []).forEach(x => { if (x && x.title) byDay[x.day] = x; });
   const done = Object.keys(byDay).filter(d => d <= adventTotal).length;
-  $("advent-title").textContent = A.title || "Advent Challenge";
+  $("advent-title").innerHTML = XMAS.snow + esc(A.title || "Advent Challenge");
   $("advent-sub").textContent =
     today < 1 ? `${adventTotal} days · starts ${adventStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
     : today > adventTotal ? `${done} of ${adventTotal} done`
@@ -118,8 +123,10 @@ function renderAdvent(today) {
         ? `<li class="door done"><a href="${esc(c.href)}" target="_blank" rel="noopener" aria-label="Day ${n}: ${esc(c.title)} (watch)">${inner}</a></li>`
         : `<li class="door done" aria-label="Day ${n}: ${esc(c.title)}">${inner}</li>`;
     }
-    const isToday = n === today;
-    return `<li class="door shut${isToday ? " today" : ""}" aria-label="Day ${n}: ${isToday ? "today — coming soon" : "not revealed yet"}"><span class="num">${n}</span><span class="q" aria-hidden="true">?</span>${isToday ? '<span class="tag">Today</span>' : ""}</li>`;
+    const isToday = n === today, last = n === adventTotal;
+    // today = a wrapped gift; the last door (Christmas Eve) = a gold star; the rest = "?"
+    const face = isToday ? XMAS.bow : last ? XMAS.star : '<span class="q" aria-hidden="true">?</span>';
+    return `<li class="door shut${isToday ? " today" : ""}${last ? " last" : ""}" aria-label="Day ${n}: ${isToday ? "today — coming soon" : "not revealed yet"}"><span class="num">${n}</span>${face}${isToday ? '<span class="tag">Today</span>' : ""}</li>`;
   }).join("");
   // Opened doors flip in one after another. (Set from JS: the CSP blocks inline style="" attributes.)
   document.querySelectorAll("#doors .done").forEach((li, i) => li.style.setProperty("--i", i));
@@ -127,14 +134,10 @@ function renderAdvent(today) {
 }
 
 function render(stagger) {
-  /* Advent replaces the race calendar while it's on */
+  /* December calendar sits above the races while it's on */
   const today = adventToday(), on = adventVisible(today);
   $("advent").hidden = !on;
-  if (on) {
-    if (today !== adventDay) { adventDay = today; renderAdvent(today); }
-    $("next").hidden = true; $("later-wrap").hidden = true;
-    return;
-  }
+  if (on && today !== adventDay) { adventDay = today; renderAdvent(today); }
   const now = Date.now();
   const upcoming = races.filter(r => r.t - now > -12 * 36e5);   // keep race day visible until ~evening
   const hero = upcoming[0], later = upcoming.slice(1);
