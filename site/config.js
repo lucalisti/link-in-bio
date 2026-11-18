@@ -40,6 +40,22 @@ window.CONFIG = {
   ],
 
 
+  // ---------- December challenge calendar ----------
+  // From Dec 1 to Dec 31 this replaces the race calendar (races come back Jan 1).
+  // Days you haven't filled in show as "?" doors. Today's door gets a red ring.
+  // Each day, after the episode is up, add a line:
+  //   { day: 1, title: "100 burpees for time", href: "https://youtube.com/shorts/..." },
+  // href is optional — without it the door just shows the title.
+  // Preview what it looks like on any day: open the page with ?day=7 at the end of the URL.
+  advent: {
+    title: "24 Days of Challenges",
+    start: "2026-12-01",
+    playlist: "",                    // optional: link to the full playlist ("Watch every episode")
+    days: [
+    ],
+  },
+
+
   // ---------- Races ----------
   // date: "YYYY-MM-DD".  Put them in order, soonest first.
   // approx: true  → add to a race if the date isn't confirmed yet (shows "~Feb 2027").

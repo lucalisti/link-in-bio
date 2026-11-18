@@ -82,7 +82,59 @@ const dayWidth = ms => Math.max(2, String(parts(ms).d).length);   // 2 tiles, or
 
 let heroKey = null, heroFlaps = null, listKey = null, listRows = [];
 
+/* ---- December challenge calendar ----
+   Takes the races' spot from advent.start until the end of December.
+   Preview any time: add ?day=7 to the URL to see the page as it looks on Dec 7 (?day=0 = before it starts). */
+const A = CONFIG.advent, q = new URLSearchParams(location.search);
+const simDay = q.has("day") ? parseInt(q.get("day"), 10) || 0 : null;
+let adventStart = null, adventDay = null;
+if (A && A.start) { const [y, m, d] = A.start.split("-").map(Number); adventStart = new Date(y, m - 1, d); }
+const adventTotal = (A && A.total) || 24;
+
+function adventToday() {           // 1 on start day, 2 the next day, … (0 or less = not started)
+  if (simDay !== null) return simDay;
+  const n = new Date(), mid = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  return Math.round((mid - adventStart) / 864e5) + 1;
+}
+function adventVisible(today) {    // show from start day through Dec 31 (a recap after Christmas)
+  if (!adventStart) return false;
+  if (simDay !== null) return true;
+  const last = new Date(adventStart.getFullYear(), 11, 31);
+  return today >= 1 && today <= Math.round((last - adventStart) / 864e5) + 1;
+}
+function renderAdvent(today) {
+  const byDay = {}; (A.days || []).forEach(x => { if (x && x.title) byDay[x.day] = x; });
+  const done = Object.keys(byDay).filter(d => d <= adventTotal).length;
+  $("advent-title").textContent = A.title || "Advent Challenge";
+  $("advent-sub").textContent =
+    today < 1 ? `${adventTotal} days · starts ${adventStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
+    : today > adventTotal ? `${done} of ${adventTotal} done`
+    : `Day ${today} of ${adventTotal}`;
+  $("doors").innerHTML = Array.from({ length: adventTotal }, (_, i) => {
+    const n = i + 1, c = byDay[n];
+    if (c) {   // done: show the challenge (links to the episode if href is set)
+      const inner = `<span class="num">${n}</span><span class="ttl">${esc(c.title)}</span>`;
+      return live(c)
+        ? `<li class="door done"><a href="${esc(c.href)}" target="_blank" rel="noopener" aria-label="Day ${n}: ${esc(c.title)} (watch)">${inner}</a></li>`
+        : `<li class="door done" aria-label="Day ${n}: ${esc(c.title)}">${inner}</li>`;
+    }
+    const isToday = n === today;
+    return `<li class="door shut${isToday ? " today" : ""}" aria-label="Day ${n}: ${isToday ? "today — coming soon" : "not revealed yet"}"><span class="num">${n}</span><span class="q" aria-hidden="true">?</span>${isToday ? '<span class="tag">Today</span>' : ""}</li>`;
+  }).join("");
+  // Opened doors flip in one after another. (Set from JS: the CSP blocks inline style="" attributes.)
+  document.querySelectorAll("#doors .done").forEach((li, i) => li.style.setProperty("--i", i));
+  if (A.playlist && !String(A.playlist).includes("YOUR_")) { $("advent-all").href = A.playlist; $("advent-all").hidden = false; }
+}
+
 function render(stagger) {
+  /* Advent replaces the race calendar while it's on */
+  const today = adventToday(), on = adventVisible(today);
+  $("advent").hidden = !on;
+  if (on) {
+    if (today !== adventDay) { adventDay = today; renderAdvent(today); }
+    $("next").hidden = true; $("later-wrap").hidden = true;
+    return;
+  }
   const now = Date.now();
   const upcoming = races.filter(r => r.t - now > -12 * 36e5);   // keep race day visible until ~evening
   const hero = upcoming[0], later = upcoming.slice(1);
