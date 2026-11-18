@@ -50,14 +50,18 @@ let prev = 0;
 if (c.advent) {
   const a = c.advent, total = a.total || 24, seen = new Set();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(a.start || "")) errors.push(`advent "start" must look like 2026-12-01`);
-  if (a.playlist && !/^https:\/\//.test(a.playlist)) errors.push(`advent "playlist" must start with https:// (or be "")`);
+  for (const k of ["playlist", "suggest"])
+    if (a[k] && !/^https:\/\//.test(a[k])) errors.push(`advent "${k}" must start with https:// (or be "")`);
+  if (a.dropTime && !/^([01]\d|2[0-3]):[0-5]\d$/.test(a.dropTime)) errors.push(`advent "dropTime" must look like "18:00" (24-hour)`);
   (a.days || []).forEach((d, i) => {
     const label = `advent day #${i + 1}${d && d.day ? ` (day ${d.day})` : ""}`;
     if (!Number.isInteger(d.day) || d.day < 1 || d.day > total) return errors.push(`${label}: "day" must be a number from 1 to ${total}`);
     if (seen.has(d.day)) errors.push(`advent day ${d.day} is listed twice`);
     seen.add(d.day);
     if (!d.title) errors.push(`advent day ${d.day} has no title`);
-    if (d.href && !/^https:\/\//.test(d.href)) errors.push(`advent day ${d.day} href must start with https://`);
+    for (const k of ["ig", "yt", "tt", "href"])
+      if (d[k] && !/^https:\/\//.test(d[k])) errors.push(`advent day ${d.day} "${k}" link must start with https://`);
+    if (!d.ig && !d.yt && !d.tt && !d.href) warnings.push(`advent day ${d.day} has no episode link yet (card will say "coming soon")`);
   });
 }
 

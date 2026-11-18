@@ -38,6 +38,9 @@
   <section class="advent" id="advent" hidden>
     <div class="advent-head"><h2 id="advent-title"></h2><span class="d" id="advent-sub"></span></div>
     <ol class="doors" id="doors"></ol>
+    <a class="advent-suggest" id="advent-suggest" target="_blank" rel="noopener" hidden>
+      <span class="t">Got a challenge for me?</span><span class="s">DM me your idea</span>
+    </a>
     <a class="advent-all" id="advent-all" target="_blank" rel="noopener" hidden>Watch every episode</a>
   </section>
 
@@ -53,7 +56,20 @@
   </section>
 </main>
 
+<dialog class="sheet" id="sheet" aria-labelledby="sheet-title">
+  <div class="sheet-in">
+    <button type="button" class="sheet-x" id="sheet-x" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <span class="sheet-day" id="sheet-day"></span>
+    <h3 id="sheet-title"></h3>
+    <p class="sheet-res" id="sheet-res"></p>
+    <ul class="sheet-links" id="sheet-links"></ul>
+  </div>
+</dialog>
+
 <script src="config.js"></script>
 <script src="app.js"></script>
+<script src="advent.js"></script>
 </body>
 </html>

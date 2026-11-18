@@ -3,18 +3,18 @@
   --bg:#fafaf9; --fg:#18181a; --muted:#6f6f73; --line:#e6e6e3;
   --card:#ffffff; --card-hover:#f3f3f1; --card-line:#e6e6e3;
   --tile:#1c1c1e; --tile-top:#262628; --tile-fg:#f4f4f1; --hinge:#0b0b0c;
-  --strava:#fc4c02; --xmas:#c8102e; --gift:#b8102b; --pine:#1d6b44; --gold:#d9a521;
+  --strava:#fc4c02; --xmas:#c8102e; --gift:#b8102b; --pine:#1d6b44; --gold:#d9a521; --flake:#a9b8c6;
   --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"Geist Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111112;--fg:#ededec;--muted:#8e8e93;--line:#262628;
   --card:#1b1b1d;--card-hover:#232326;--card-line:#262628;
-  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff6b6b;--gift:#a3182d;--pine:#5cc98a;--gold:#f2c94c;color-scheme:dark}}
+  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff6b6b;--gift:#a3182d;--pine:#5cc98a;--gold:#f2c94c;--flake:#e8eef5;color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111112;--fg:#ededec;--muted:#8e8e93;--line:#262628;
   --card:#1b1b1d;--card-hover:#232326;--card-line:#262628;
-  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff6b6b;--gift:#a3182d;--pine:#5cc98a;--gold:#f2c94c;color-scheme:dark}
+  --tile:#232326;--tile-top:#2c2c30;--tile-fg:#f1f1ee;--hinge:#111112;--xmas:#ff6b6b;--gift:#a3182d;--pine:#5cc98a;--gold:#f2c94c;--flake:#e8eef5;color-scheme:dark}
 
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -83,7 +83,9 @@ h2{font:400 .75rem var(--mono);color:var(--muted);text-transform:uppercase;lette
 @keyframes ft{from{transform:rotateX(0)}to{transform:rotateX(-90deg)}}
 @keyframes fb{from{transform:rotateX(90deg)}to{transform:rotateX(0)}}
 
-/* December challenge calendar: 24 doors. "?" doors match the flip tiles; opened doors are cards. */
+
+/* ===== December challenge calendar (advent.js) =====
+   "?" doors match the flip tiles · today = wrapped gift with a countdown · opened = cards */
 .advent{display:flex;flex-direction:column;gap:14px}
 .advent-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .advent-head h2{margin:0;display:flex;align-items:center;gap:7px}
@@ -91,34 +93,92 @@ h2{font:400 .75rem var(--mono);color:var(--muted);text-transform:uppercase;lette
 .advent-head .d{font:400 .75rem var(--mono);color:var(--muted)}
 .doors{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0;margin:0;list-style:none}
 .door{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden}
-.door > a,.door.done{color:inherit;text-decoration:none}
 .door .num{position:absolute;top:6px;left:8px;font:600 .7rem var(--mono);line-height:1}
+
 /* not opened yet */
 .door.shut{background:linear-gradient(var(--tile-top) 50%,var(--tile) 50%);color:var(--tile-fg);display:grid;place-items:center}
 .door.shut::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;margin-top:-.5px;background:var(--hinge)}
 .door.shut .num{opacity:.55}
 .door .q{font:600 1.6rem var(--mono);line-height:1;opacity:.9}
-/* today: a wrapped gift — red box, ribbon cross, bow */
-.door.shut.today{background:var(--gift);color:#fff}
-.door.shut.today::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:7px;margin-left:-3.5px;background:rgba(255,255,255,.22)}
-.door.shut.today::after{height:7px;margin-top:-3.5px;background:rgba(255,255,255,.22)}
-.door.today .num{opacity:.85}
-.door .bow{position:relative;z-index:1;width:34px;height:34px;color:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
-.door .tag{position:absolute;bottom:6px;left:0;right:0;text-align:center;font:600 .55rem var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#fff;z-index:1}
-/* last door (Christmas Eve): gold star */
 .door .star{width:26px;height:26px;color:var(--gold);position:relative;z-index:1}
+
+/* today: red gift, ribbon, bow, countdown to the drop */
+.door.shut.today{background:var(--gift);color:#fff}
+.door.shut.today::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:7px;margin-left:-3.5px;background:rgba(255,255,255,.2)}
+.door.shut.today::after{height:7px;margin-top:-3.5px;background:rgba(255,255,255,.2)}
+.door.today .num{opacity:.85}
+.door .tag{position:absolute;top:6px;right:7px;font:600 .5rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.85;z-index:1}
+.door .bow{position:relative;z-index:1;width:30px;height:30px;margin-bottom:12px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.clock.mini{--w:12px;--h:17px;--fs:11px;position:absolute;bottom:7px;left:0;right:0;justify-content:center;gap:4px;z-index:1}
+.clock.mini .grp{gap:1px}
+.clock.mini .unit{font-size:.5rem;color:rgba(255,255,255,.75);margin-left:1px}
+.clock.mini .half.t{background:rgba(0,0,0,.32)}
+.clock.mini .half.b{background:rgba(0,0,0,.42)}
+.clock.mini .half{color:#fff}
+.clock.mini .flap{border-radius:3px;box-shadow:none}
+.clock.mini .flap::after{background:rgba(0,0,0,.45)}
+.door .soon{font:600 .52rem var(--mono);letter-spacing:.08em;text-transform:uppercase}
+
 /* opened */
 .door.done{background:var(--card);border:1px solid var(--card-line);transform-origin:top;animation:door .45s cubic-bezier(.2,.8,.3,1) both;animation-delay:calc(var(--i,0) * 70ms + 200ms)}
-.door.done > a{display:block;position:absolute;inset:0;transition:background .15s}
-.door.done > a:hover{background:var(--card-hover)}
+.door.done > button{all:unset;box-sizing:border-box;position:absolute;inset:0;display:flex;flex-direction:column;padding:22px 7px 7px 8px;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.door.done > button:hover{background:var(--card-hover)}
+.door.done > button:focus-visible{outline:2px solid var(--fg);outline-offset:-3px;border-radius:10px}
 .door.done .num{color:var(--xmas)}
-.door .ttl{position:absolute;inset:22px 7px 7px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;
-  font-size:.72rem;font-weight:500;line-height:1.25;text-wrap:balance}
-.door.done > a .ttl::after{content:" ↗";color:var(--pine)}
+.door .ttl{flex:none;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;font-size:.72rem;font-weight:500;line-height:1.25;text-wrap:balance}
+.door .res{position:absolute;top:6px;right:7px;left:24px;text-align:right;font:600 .62rem/1 var(--mono);color:var(--pine);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 @keyframes door{from{transform:perspective(400px) rotateX(-90deg);opacity:0}to{transform:none;opacity:1}}
-@media (prefers-reduced-motion:reduce){.door.done{animation:none}}
+
+/* unwrap: a newly opened door starts wrapped, then the paper slides apart */
+.door.fresh{animation:none}
+.paper{position:absolute;inset:0;z-index:2;display:flex;pointer-events:none}
+.lid{flex:1;background:var(--gift);animation:.9s cubic-bezier(.65,0,.35,1) .8s both}
+.lid.l{background:linear-gradient(to left,rgba(255,255,255,.2) 3.5px,transparent 0),linear-gradient(transparent calc(50% - 3.5px),rgba(255,255,255,.2) 0 calc(50% + 3.5px),transparent 0),var(--gift);animation-name:lid-l}
+.lid.r{background:linear-gradient(to right,rgba(255,255,255,.2) 3.5px,transparent 0),linear-gradient(transparent calc(50% - 3.5px),rgba(255,255,255,.2) 0 calc(50% + 3.5px),transparent 0),var(--gift);animation-name:lid-r}
+@keyframes lid-l{to{transform:translateX(-110%) rotate(-10deg)}}
+@keyframes lid-r{to{transform:translateX(110%) rotate(10deg)}}
+
+/* below the grid */
+.advent-suggest{display:flex;flex-direction:column;align-items:center;gap:1px;padding:12px;border:1px dashed var(--line);border-radius:14px;
+  color:inherit;text-decoration:none;text-align:center;transition:background .15s}
+.advent-suggest:hover{background:var(--card-hover)}
+.advent-suggest .t{font-weight:500}
+.advent-suggest .s{font-size:.82rem;color:var(--muted)}
 .advent-all{align-self:center;font-size:.85rem;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
 .advent-all:hover{color:var(--fg)}
+
+/* episode card (bottom sheet on phones, centered on desktop) */
+.sheet{border:0;padding:0;margin:auto auto 0;width:100%;max-width:30rem;background:var(--card);color:var(--fg);
+  border-radius:18px 18px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.25)}
+.sheet[open]{animation:sheet-up .3s cubic-bezier(.2,.8,.3,1)}
+.sheet::backdrop{background:rgba(0,0,0,.45)}
+@keyframes sheet-up{from{transform:translateY(40px);opacity:0}}
+@media (min-width:600px){.sheet{margin:auto;border-radius:18px}}
+.sheet-in{position:relative;display:flex;flex-direction:column;gap:6px;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px))}
+.sheet-x{all:unset;position:absolute;top:12px;right:12px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;cursor:pointer;color:var(--muted)}
+.sheet-x:hover{background:var(--card-hover);color:var(--fg)}
+.sheet-x:focus-visible{outline:2px solid var(--fg)}
+.sheet-x svg{width:18px;height:18px}
+.sheet-day{font:600 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--xmas)}
+.sheet h3{margin:0;padding-right:36px;font-size:1.3rem;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.sheet-res{margin:0;font:600 1.1rem var(--mono);color:var(--pine)}
+.sheet-links{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.sheet-links a{display:flex;align-items:center;gap:12px;padding:8px;border:1px solid var(--card-line);border-radius:12px;color:inherit;text-decoration:none;font-weight:500;transition:background .15s}
+.sheet-links a:hover{background:var(--card-hover)}
+.sheet-links .ic{display:grid;place-items:center;width:36px;height:36px;border-radius:8px;background:var(--fg);color:var(--bg);flex:none}
+.sheet-links .ic svg{width:20px;height:20px}
+.sheet-links .none{color:var(--muted);font-size:.9rem}
+
+/* light snowfall behind the header */
+.wrap{position:relative;z-index:1}
+.snowfall{position:absolute;top:0;left:0;right:0;height:520px;overflow:hidden;pointer-events:none;z-index:0;
+  -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.snowfall span{position:absolute;top:-8px;left:var(--x);width:var(--s);height:var(--s);border-radius:50%;background:var(--flake);opacity:var(--o);
+  animation:fall var(--dur) linear var(--delay) infinite}
+@keyframes fall{to{transform:translate(var(--dx),530px)}}
+
+@media (prefers-reduced-motion:reduce){.door.done,.lid,.sheet[open]{animation:none}.paper{display:none}}
 
 .draft{font:400 .75rem var(--mono);color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:6px 10px;margin:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
