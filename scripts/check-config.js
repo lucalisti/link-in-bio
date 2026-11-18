@@ -47,6 +47,24 @@ let prev = 0;
   if (r.approx) warnings.push(`race "${r.name}" date is approximate`);
 });
 
+if (c.advent) {
+  const a = c.advent, total = a.total || 24, seen = new Set();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(a.start || "")) errors.push(`advent "start" must look like 2026-12-01`);
+  for (const k of ["playlist", "suggest"])
+    if (a[k] && !/^https:\/\//.test(a[k])) errors.push(`advent "${k}" must start with https:// (or be "")`);
+  if (a.dropTime && !/^([01]\d|2[0-3]):[0-5]\d$/.test(a.dropTime)) errors.push(`advent "dropTime" must look like "18:00" (24-hour)`);
+  (a.days || []).forEach((d, i) => {
+    const label = `advent day #${i + 1}${d && d.day ? ` (day ${d.day})` : ""}`;
+    if (!Number.isInteger(d.day) || d.day < 1 || d.day > total) return errors.push(`${label}: "day" must be a number from 1 to ${total}`);
+    if (seen.has(d.day)) errors.push(`advent day ${d.day} is listed twice`);
+    seen.add(d.day);
+    if (!d.title) errors.push(`advent day ${d.day} has no title`);
+    for (const k of ["ig", "yt", "tt", "href"])
+      if (d[k] && !/^https:\/\//.test(d[k])) errors.push(`advent day ${d.day} "${k}" link must start with https://`);
+    if (!d.ig && !d.yt && !d.tt && !d.href) warnings.push(`advent day ${d.day} has no episode link yet (card will say "coming soon")`);
+  });
+}
+
 warnings.forEach(w => console.log("⚠ " + w));
 if (errors.length) { errors.forEach(e => console.error("✗ " + e)); process.exit(1); }
 console.log(`✓ config.js OK — ${(c.socials || []).length} icons, ${c.links.length} links, ${(c.races || []).length} races`);
